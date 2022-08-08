@@ -41,7 +41,7 @@ const requestHandler = (req, res) => {
   //   process.exit();
 };
 
-exports = requestHandler;
+module.exports = requestHandler;
 
 /* 
 module.exports = {

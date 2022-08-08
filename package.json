@@ -1,0 +1,23 @@
+{
+  "name": "udemy",
+  "version": "1.0.0",
+  "description": "My Tutorial file",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IyiolaJay/server.git"
+  },
+  "author": "Hammed Iyiola Jimoh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IyiolaJay/server/issues"
+  },
+  "homepage": "https://github.com/IyiolaJay/server#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
