@@ -9,11 +9,12 @@ const bodyParser = require("body-parser");
 // const routes = require("./routes")
 const app = express();
 
+app.set("view engine", "pug"); //tells the express engine to use the pug templating engine
+app.set("views", "views"); //Tells the express engine where to find the templates
+
 const adminRoute = require("./routes/admin");
 
 const shopRoute = require("./routes/shop");
-
-
 
 // Imports above, middlewares are in this section
 
