@@ -8,10 +8,18 @@ const rootDir = require("./util/path");
 const bodyParser = require("body-parser");
 // const routes = require("./routes")
 const app = express();
+
 const adminRoute = require("./routes/admin");
+
 const shopRoute = require("./routes/shop");
 
+
+
+// Imports above, middlewares are in this section
+
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(shopRoute);
 app.use("/admin", adminRoute);
