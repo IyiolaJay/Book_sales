@@ -9,7 +9,7 @@ const path = require("path");
 const product = [];
 router.get("/add-product", (req, res, next) => {
   //   console.log("In another middleware");
-  res.render("add-product", { docTitle: "Add Product" });
+  res.render("add-product", { docTitle: "Add Product", path : 'admin/add-product'});
 });
 
 router.post("/product", (req, res, next) => {

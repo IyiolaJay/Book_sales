@@ -13,12 +13,13 @@ const adminData = require("./admin");
 //   res.sendFile(path.join(rootDir, "views", "shop.html"));
 // });
 
-//Using dynamic templating engine
+//Using dynamic template engine
 router.get("/", (req, res, next) => {
   const products = adminData.product;
   const data = {
     prods: products,
     docTitle: "Shop Wick",
+    path : '/'
   };
   res.render("shop", data);
 });
