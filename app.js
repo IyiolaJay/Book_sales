@@ -7,9 +7,14 @@ const rootDir = require("./util/path");
 
 const bodyParser = require("body-parser");
 // const routes = require("./routes")
+const expressHbs = require("express-handlebars");
+
 const app = express();
 
-app.set("view engine", "pug"); //tells the express engine to use the pug templating engine
+app.engine("hbs", expressHbs.engine({ defaultLayout: null, extname: ".hbs" }));
+app.set("view engine", "hbs");
+
+// app.set("view engine", "pug"); //tells the express engine to use the pug templating engine
 app.set("views", "views"); //Tells the express engine where to find the templates
 
 const adminRoute = require("./routes/admin");
@@ -28,7 +33,7 @@ app.use("/admin", adminRoute);
 app.use((req, res, next) => {
   //   res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
   // res.status(404).sendFile(path.join(rootDir, "views", "404.html"));
-  res.status(404).render("404");
+  res.status(404).render("404", { title: "Page Not found" });
 });
 // const server = http.createServer(app);
 // server.listen(3000);
