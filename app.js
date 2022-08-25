@@ -11,7 +11,13 @@ const expressHbs = require("express-handlebars");
 
 const app = express();
 
-app.engine("hbs", expressHbs.engine({ defaultLayout: null, extname: ".hbs" }));
+app.engine(
+  "hbs",
+  expressHbs.engine({
+    defaultLayout: null,
+    extname: ".hbs",
+  })
+);
 app.set("view engine", "hbs");
 
 // app.set("view engine", "pug"); //tells the express engine to use the pug templating engine
