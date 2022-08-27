@@ -19,7 +19,8 @@ router.get("/", (req, res, next) => {
   const data = {
     prods: products,
     docTitle: "Shop Wick",
-    path : '/'
+    path : '/',
+    hasProducts: products.length > 0
   };
   res.render("shop", data);
 });
