@@ -20,7 +20,9 @@ router.get("/", (req, res, next) => {
     prods: products,
     docTitle: "Shop Wick",
     path : '/',
-    hasProducts: products.length > 0
+    hasProducts: products.length > 0,
+    shopActive : true,
+    productCss : true
   };
   res.render("shop", data);
 });
