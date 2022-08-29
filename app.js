@@ -7,19 +7,11 @@ const rootDir = require("./util/path");
 
 const bodyParser = require("body-parser");
 // const routes = require("./routes")
-const expressHbs = require("express-handlebars");
+// const expressHbs = require("express-handlebars");
 
 const app = express();
 
-app.engine(
-  "hbs",
-  expressHbs.engine({
-    defaultLayout: "main-layout",
-    extname: ".hbs",
-    layoutsDir: "views/layouts",
-  })
-);
-app.set("view engine", "hbs");
+app.set("view engine", "ejs");
 
 // app.set("view engine", "pug"); //tells the express engine to use the pug templating engine
 app.set("views", "views"); //Tells the express engine where to find the templates
@@ -28,7 +20,7 @@ const adminRoute = require("./routes/admin");
 
 const shopRoute = require("./routes/shop");
 
-// Imports above, middlewares are in this section
+// Imports above, middle-wares are in this section
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -40,7 +32,7 @@ app.use("/admin", adminRoute);
 app.use((req, res, next) => {
   //   res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
   // res.status(404).sendFile(path.join(rootDir, "views", "404.html"));
-  res.status(404).render("404", { title: "Page Not found" });
+  res.status(404).render("404", { docTitle: "Page Not found" });
 });
 // const server = http.createServer(app);
 // server.listen(3000);

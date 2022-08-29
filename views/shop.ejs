@@ -1,10 +1,9 @@
-<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Add Product</title>
+    <title><%= docTitle %></title>
     <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="/css/product.css" />
   </head>
@@ -22,12 +21,12 @@
     </header>
 
     <main>
-      <h1>My Products</h1>
-      <p>List of all the products...</p>
+      <% if (prods.length > 0) { %>
       <div class="grid">
+        <% for (products of prods) { %>
         <article class="card product-item">
           <header class="card__header">
-            <h1 class="product__title">Great Book</h1>
+            <h1 class="product__title"><%= products.title %></h1>
           </header>
           <div class="card__image">
             <img
@@ -46,8 +45,11 @@
             <button class="btn">Add to Cart</button>
           </div>
         </article>
+        <% } %>
       </div>
+      <% } else { %>
+      <h3>No Products ooh</h3>
+      <% } %>
     </main>
-    <h6>Checking</h6>
   </body>
 </html>
