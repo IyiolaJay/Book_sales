@@ -11,7 +11,7 @@ router.get("/add-product", (req, res, next) => {
   //   console.log("In another middleware");
   res.render("add-product", {
     docTitle: "Add Product",
-    path: "admin/add-product",
+    path: "/admin/add-product",
     productActive: true,
     formCss: true,
     productCss: true,
