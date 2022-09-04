@@ -1,15 +1,18 @@
-const product = [];
+const Product = require("../models/product");
+
+// const product = [];
 
 exports.getAllProducts = (req, res, next) => {
-  const data = {
-    prods: product,
+  const products = Product.fetchAll();
+  console.log(products);
+  res.render("shop", {
+    prods: products,
     docTitle: "Shop Wick",
     path: "/",
-    hasProducts: product.length > 0,
+    hasProducts: products.length > 0,
     shopActive: true,
     productCss: true,
-  };
-  res.render("shop", data);
+  });
 };
 
 exports.addProducts = (req, res, next) => {
@@ -23,7 +26,8 @@ exports.addProducts = (req, res, next) => {
 };
 
 exports.postAddProducts = (req, res, next) => {
-  console.log(req.body.title);
-  product.push({ title: req.body.title });
+  const product = new Product(req.body.title);
+  // console.log(req.body.title);
+  product.save();
   res.redirect("/admin/add-product");
 };
