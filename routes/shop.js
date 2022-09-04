@@ -6,8 +6,7 @@ const express = require("express");
 
 const router = express.Router();
 
-
-const productControllers = require("../controllers/product");
+const productControllers = require("../controllers/products");
 
 //Sending static HTML files
 // router.get("/", (req, res, next) => {
