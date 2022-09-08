@@ -3,16 +3,17 @@ const Product = require("../models/product");
 // const product = [];
 
 exports.getAllProducts = (req, res, next) => {
-  const products = Product.fetchAll();
-  console.log(products);
-  res.render("shop", {
-    prods: products,
-    docTitle: "Shop Wick",
-    path: "/",
-    hasProducts: products.length > 0,
-    shopActive: true,
-    productCss: true,
+  Product.fetchAll((products) => {
+    res.render("shop", {
+      prods: products,
+      docTitle: "Shop Wick",
+      path: "/",
+      hasProducts: products.length > 0,
+      shopActive: true,
+      productCss: true,
+    });
   });
+  // console.log(products);
 };
 
 exports.addProducts = (req, res, next) => {
