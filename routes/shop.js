@@ -6,7 +6,7 @@ const express = require("express");
 
 const router = express.Router();
 
-const productControllers = require("../controllers/products");
+const shopControllers = require("../controllers/shop");
 
 //Sending static HTML files
 // router.get("/", (req, res, next) => {
@@ -14,6 +14,7 @@ const productControllers = require("../controllers/products");
 // });
 
 //Using dynamic template engine
-router.get("/", productControllers.getAllProducts);
-
+router.get("/", shopControllers.getIndex);
+router.get("/products", shopControllers.getAllProducts);
+router.get("/cart", shopControllers.getCart);
 module.exports = router;
