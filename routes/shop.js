@@ -15,6 +15,15 @@ const shopControllers = require("../controllers/shop");
 
 //Using dynamic template engine
 router.get("/", shopControllers.getIndex);
+
 router.get("/products", shopControllers.getAllProducts);
+
+router.get("/product/:productId", shopControllers.getProductDetail);
+
 router.get("/cart", shopControllers.getCart);
+
+router.get("/checkout", shopControllers.getCheckout);
+
+router.get("/orders", shopControllers.getOrders);
+
 module.exports = router;
