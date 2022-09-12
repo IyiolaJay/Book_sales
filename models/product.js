@@ -59,4 +59,13 @@ module.exports = class Product {
     //   cb(JSON.parse(fileContent));
     // });
   }
+
+  static findById(id, cb) {
+    getProductsFromFile((products) => {
+      const product = products.find((p) => {
+        return p.id === id;
+      });
+      cb(product);
+    });
+  }
 };
