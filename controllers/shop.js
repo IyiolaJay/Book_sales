@@ -40,7 +40,8 @@ exports.getCart = (req, res, next) => {
 };
 
 exports.postCart = (req, res, next) => {
-  const prodId = req.params.productHiddenId;
+  const prodId = req.body.productHiddenId;
+  console.log(prodId);
   res.redirect("/cart");
 };
 exports.getOrders = (req, res, next) => {
