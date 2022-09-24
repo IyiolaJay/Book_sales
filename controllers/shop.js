@@ -45,7 +45,7 @@ exports.postCart = (req, res, next) => {
     Cart.addProduct(prodId, product.price);
   })
   // Cart.addProduct(prodId, )
-  res.redirect("/cart");
+  res.redirect("/products");
 };
 exports.getOrders = (req, res, next) => {
   res.render("shop/orders", { docTitle: "Your Order", path: "/orders" });
