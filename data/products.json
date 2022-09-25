@@ -1,0 +1,44 @@
+[
+  {
+    "id": "1",
+    "title": "The Semi-Colon Money ",
+    "imageUrl": "https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png",
+    "price": "200",
+    "description": "How to make money in coding"
+  },
+  {
+    "id": "2",
+    "title": "Trial and Error",
+    "imageUrl": "https://cdn.pixabay.com/photo/2016/03/31/20/51/book-1296045_960_720.png",
+    "price": "201",
+    "description": "Hammed\r\n"
+  },
+  {
+    "id": "3",
+    "title": "Things Fall apart ",
+    "imageUrl": "https://www.kindpng.com/picc/m/74-743592_open-book-3d-png-transparent-png.png",
+    "price": "38.12",
+    "description": "The Latest Book in town"
+  },
+  {
+    "title": "To Numbers",
+    "imageUrl": "https://spng.pngfind.com/pngs/s/59-591289_books-clipart-png-transparent-png.png",
+    "price": 20.1,
+    "description": "Testing",
+    "id": "0.7834596197760395"
+  },
+  {
+    "id": "4",
+    "title": "Ololade Mi Asake",
+    "imageUrl": "https://www.kindpng.com/picc/m/74-743592_open-book-3d-png-transparent-png.png",
+    "price": "34.12",
+    "description": "The Sungba Book in town"
+  },
+  {
+    "title": "FireBoy Zuko",
+    "imageUrl": "https://spng.pngfind.com/pngs/s/59-591289_books-clipart-png-transparent-png.png",
+    "price": 18.1,
+    "description": "Badoo Na baba",
+    "id": "12"
+  }
+]

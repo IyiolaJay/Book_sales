@@ -6,7 +6,7 @@ const express = require("express");
 
 const router = express.Router();
 
-const adminData = require("./admin");
+const shopControllers = require("../controllers/shop");
 
 //Sending static HTML files
 // router.get("/", (req, res, next) => {
@@ -14,14 +14,20 @@ const adminData = require("./admin");
 // });
 
 //Using dynamic template engine
-router.get("/", (req, res, next) => {
-  const products = adminData.product;
-  const data = {
-    prods: products,
-    docTitle: "Shop Wick",
-    path : '/'
-  };
-  res.render("shop", data);
-});
+router.get("/", shopControllers.getIndex);
+
+router.get("/products", shopControllers.getAllProducts);
+
+router.get("/product/:productId", shopControllers.getProductDetail);
+
+router.get("/cart", shopControllers.getCart);
+
+router.post("/cart", shopControllers.postCart);
+
+router.post("/cart/delete-item/:prodId", shopControllers.postDeleteCart);
+
+router.get("/checkout", shopControllers.getCheckout);
+
+router.get("/orders", shopControllers.getOrders);
 
 module.exports = router;
