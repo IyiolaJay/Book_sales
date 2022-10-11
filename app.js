@@ -11,7 +11,7 @@ const app = express();
 
 const errorController = require("./controllers/error");
 
-const db = require('./util/database')
+const db = require("./util/database");
 
 app.set("view engine", "ejs");
 
@@ -23,7 +23,13 @@ const adminRoute = require("./routes/admin");
 const shopRoute = require("./routes/shop");
 
 // Imports above, middle-wares are in this section
-db.execute('SELECT * FROM products').then().catch();
+db.execute("SELECT * FROM products")
+  .then((result) => {
+    console.log(result[0][0]);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
