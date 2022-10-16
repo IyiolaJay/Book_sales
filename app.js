@@ -6,10 +6,12 @@ const path = require("path");
 const rootDir = require("./util/path");
 
 const bodyParser = require("body-parser");
-// const routes = require("./routes")
-// const expressHbs = require("express-handlebars");
 
 const app = express();
+
+const errorController = require("./controllers/error");
+
+const db = require("./util/database");
 
 app.set("view engine", "ejs");
 
@@ -21,6 +23,13 @@ const adminRoute = require("./routes/admin");
 const shopRoute = require("./routes/shop");
 
 // Imports above, middle-wares are in this section
+db.execute("SELECT * FROM products")
+  .then((result) => {
+    console.log(result[0][0]);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -29,11 +38,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(shopRoute);
 app.use("/admin", adminRoute);
 
-app.use((req, res, next) => {
-  //   res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
-  // res.status(404).sendFile(path.join(rootDir, "views", "404.html"));
-  res.status(404).render("404", { docTitle: "Page Not found" });
-});
+app.use(errorController.get404);
 // const server = http.createServer(app);
 // server.listen(3000);
 
