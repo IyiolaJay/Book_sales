@@ -11,8 +11,6 @@ const app = express();
 
 const errorController = require("./controllers/error");
 
-const db = require("./util/database");
-
 app.set("view engine", "ejs");
 
 // app.set("view engine", "pug"); //tells the express engine to use the pug templating engine
@@ -23,13 +21,6 @@ const adminRoute = require("./routes/admin");
 const shopRoute = require("./routes/shop");
 
 // Imports above, middle-wares are in this section
-db.execute("SELECT * FROM products")
-  .then((result) => {
-    console.log(result[0][0]);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
