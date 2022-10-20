@@ -11,6 +11,10 @@ const app = express();
 
 const errorController = require("./controllers/error");
 
+const sequelize = require("./util/database");
+
+const models = require('./models/product'); //Imported for sequelize sync. Do not delete
+
 app.set("view engine", "ejs");
 
 // app.set("view engine", "pug"); //tells the express engine to use the pug templating engine
@@ -33,4 +37,12 @@ app.use(errorController.get404);
 // const server = http.createServer(app);
 // server.listen(3000);
 
-app.listen(3000);
+sequelize
+  .sync()
+  .then((results) => {
+    console.log("passed", results);
+    app.listen(3000);
+  })
+  .catch((err) => {
+    console.log("Failed", err);
+  });
