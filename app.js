@@ -40,7 +40,7 @@ app.use(errorController.get404);
 sequelize
   .sync()
   .then((results) => {
-    console.log("passed", results);
+    // console.log("passed", results);
     app.listen(3000);
   })
   .catch((err) => {

@@ -1,5 +1,5 @@
 // const Product = require("../models/product");
-const Product = require("../models/product-sql");
+const Product = require("../models/product");
 
 exports.addProducts = (req, res, next) => {
   res.render("admin/edit-product", {
@@ -16,10 +16,12 @@ exports.postAddProducts = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  const products = new Product(id, title, imageUrl, price, description);
-
-  products
-    .save()
+  Product.create({
+    title: title,
+    imageUrl: imageUrl,
+    price: price,
+    description: description,
+  })
     .then(() => {
       res.redirect("/admin/add-product");
     })
