@@ -16,21 +16,21 @@ exports.postAddProducts = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  req.user.createProduct({
-    title: title,
-    imageUrl: imageUrl,
-    price: price,
-    description: description,
-
-  })
-
-  // Product.create({
-  //   title: title,
-  //   imageUrl: imageUrl,
-  //   price: price,
-  //   description: description,
-  //   userId: req.user.id,
-  // })
+  req.user
+    .createProduct({
+      title: title,
+      imageUrl: imageUrl,
+      price: price,
+      description: description,
+    })
+    //Or
+    // Product.create({
+    //   title: title,
+    //   imageUrl: imageUrl,
+    //   price: price,
+    //   description: description,
+    //   userId: req.user.id,
+    // })
     .then(() => {
       res.redirect("/admin/add-product");
     })
@@ -46,13 +46,14 @@ exports.getEditProduct = (req, res, next) => {
   if (!editMode) {
     return res.redirect("/products");
   }
-
-  Product.findOne({
-    where: {
-      id: prodId,
-    },
-  })
-    .then((product) => {
+  req.user
+    .getProducts({
+      where: {
+        id: prodId,
+      },
+    })
+    .then((products) => {
+      const product = products[0];
       res.render("admin/edit-product", {
         docTitle: "Edit Product",
         editing: editMode,
@@ -63,6 +64,22 @@ exports.getEditProduct = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
+  // Product.findOne({
+  //   where: {
+  //     id: prodId,
+  //   },
+  // })
+  //   .then((product) => {
+  //     res.render("admin/edit-product", {
+  //       docTitle: "Edit Product",
+  //       editing: editMode,
+  //       path: "/admin/edit-product",
+  //       product: product,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
 };
 
 exports.postEditProduct = (req, res, next) => {

@@ -15,6 +15,8 @@ const sequelize = require("./util/database");
 
 const Product = require("./models/product"); //Imported for sequelize sync. Do not delete
 const User = require("./models/users");
+const Cart = require("./models/cart");
+const CartItem = require("./models/cart-item");
 
 app.set("view engine", "ejs");
 
@@ -50,9 +52,13 @@ app.use(errorController.get404);
 // Associations definitions
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 sequelize
   .sync()
+  // .sync({ force: true })
   .then((result) => {
     return User.findByPk(1);
   })
@@ -64,6 +70,10 @@ sequelize
       });
     }
     return user;
+  })
+  .then((user) => {
+    // Cart.create();
+    user.createCart();
   })
   .then((results) => {
     app.listen(3000);
