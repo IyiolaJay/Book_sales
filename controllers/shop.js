@@ -1,5 +1,6 @@
 const Product = require("../models/product");
 const Cart = require("../models/cart");
+const cartItem = require("../models/cart-item");
 // const product = [];
 
 exports.getAllProducts = (req, res, next) => {
@@ -62,7 +63,6 @@ exports.getCart = (req, res, next) => {
   req.user
     .getCart()
     .then((cart) => {
-      // console.log(cart);
       return cart.getProducts();
     })
     .then((products) => {
@@ -104,6 +104,7 @@ exports.getCart = (req, res, next) => {
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productHiddenId;
   let fetchedCart;
+  let newQuantity = 1;
   req.user
     .getCart()
     .then((cart) => {
@@ -115,17 +116,16 @@ exports.postCart = (req, res, next) => {
       if (products.length > 0) {
         product = products[0];
       }
-      let newQuantity = 1;
+
       if (product) {
-        // ...
+        oldQuantity = product.cartItem.qty;
+        newQuantity = oldQuantity + 1;
+        return product;
       }
-      return Product.findByPk(prodId)
-        .then((product) => {
-          fetchedCart.addProduct(product, { through: { qty: newQuantity } });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      return Product.findByPk(prodId);
+    })
+    .then((data) => {
+      return fetchedCart.addProduct(data, { through: { qty: newQuantity } });
     })
     .catch();
   res.redirect("/products");
@@ -134,8 +134,21 @@ exports.postCart = (req, res, next) => {
 exports.postDeleteCart = (req, res, next) => {
   const id = req.params.prodId;
   const price = req.body.prodPrice;
-  Cart.deleteById(id, price);
-  res.redirect("/cart");
+  req.user
+    .getCart()
+    .then((cart) => {
+      return cart.getProducts({ where: { id: id } });
+    })
+    .then((products) => {
+      const product = products[0];
+      return product.cartItem.destroy();
+    })
+    .then((result) => {
+      res.redirect("/cart");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.getOrders = (req, res, next) => {
