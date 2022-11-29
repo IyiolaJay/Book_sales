@@ -17,6 +17,8 @@ const Product = require("./models/product"); //Imported for sequelize sync. Do n
 const User = require("./models/users");
 const Cart = require("./models/cart");
 const CartItem = require("./models/cart-item");
+const Order = require("./models/order");
+const OrderItem = require("./models/order-item");
 
 app.set("view engine", "ejs");
 
@@ -55,6 +57,9 @@ User.hasMany(Product);
 User.hasOne(Cart);
 Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(Product, { through: OrderItem });
 
 sequelize
   .sync()
