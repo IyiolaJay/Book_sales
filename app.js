@@ -13,6 +13,8 @@ const errorController = require("./controllers/error");
 
 const mongoConnect = require("./util/database").mongoConnect;
 
+const User = require("./models/users");
+
 app.set("view engine", "ejs");
 
 // app.set("view engine", "pug"); //tells the express engine to use the pug templating engine
@@ -29,15 +31,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  // User.findByPk(1)
-  //   .then((user) => {
-  //     req.user = user;
-  //     next();
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
-  next();
+  User.findById("63adc07919019465c843d358")
+    .then((user) => {
+      req.user = new User(user.name, user.email, user.cart, user._id);
+      next();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 app.use(shopRoute);
