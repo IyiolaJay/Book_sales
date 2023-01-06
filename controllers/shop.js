@@ -63,9 +63,6 @@ exports.getIndex = (req, res, next) => {
 exports.getCart = (req, res, next) => {
   req.user
     .getCart()
-    .then((cart) => {
-      return cart.getProducts();
-    })
     .then((products) => {
       res.render("shop/cart", {
         docTitle: "Cart",
@@ -148,14 +145,7 @@ exports.postDeleteCart = (req, res, next) => {
   const id = req.params.prodId;
   const price = req.body.prodPrice;
   req.user
-    .getCart()
-    .then((cart) => {
-      return cart.getProducts({ where: { id: id } });
-    })
-    .then((products) => {
-      const product = products[0];
-      return product.cartItem.destroy();
-    })
+    .deleteFromCart(id)
     .then((result) => {
       res.redirect("/cart");
     })
@@ -167,32 +157,32 @@ exports.postDeleteCart = (req, res, next) => {
 exports.postOrder = (req, res, next) => {
   let fetchedCart;
   req.user
-    .getCart()
-    .then((cart) => {
-      fetchedCart = cart;
-      return cart.getProducts();
-    })
-    .then((products) => {
-      return req.user
-        .createOrder()
-        .then((order) => {
-          return order.addProducts(
-            // products,
-            // { through: { qty: products[0].cartItem.qty } }
-            //  Or Use the method above.
-            products.map((product) => {
-              product.orderItem = { qty: product.cartItem.qty };
-              return product;
-            })
-          );
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    })
-    .then((results) => {
-      return fetchedCart.setProducts(null);
-    })
+    .addOrder()
+    // .then((cart) => {
+    //   fetchedCart = cart;
+    //   return cart.getProducts();
+    // })
+    // .then((products) => {
+    //   return req.user
+    //     .createOrder()
+    //     .then((order) => {
+    //       return order.addProducts(
+    //         // products,
+    //         // { through: { qty: products[0].cartItem.qty } }
+    //         //  Or Use the method above.
+    //         products.map((product) => {
+    //           product.orderItem = { qty: product.cartItem.qty };
+    //           return product;
+    //         })
+    //       );
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // })
+    // .then((results) => {
+    //   return fetchedCart.setProducts(null);
+    // })
     .then((result) => {
       res.redirect("/orders");
     })
@@ -203,7 +193,7 @@ exports.postOrder = (req, res, next) => {
 
 exports.getOrders = (req, res, next) => {
   req.user
-    .getOrders({ include: ["products"] })
+    .getOrder()
     .then((orders) => {
       res.render("shop/orders", {
         docTitle: "Your Order",
