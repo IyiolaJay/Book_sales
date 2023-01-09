@@ -11,7 +11,7 @@ const app = express();
 
 const errorController = require("./controllers/error");
 
-const mongoConnect = require("./util/database").mongoConnect;
+const mongoose = require("mongoose");
 
 const User = require("./models/users");
 
@@ -31,9 +31,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  User.findById("63adc07919019465c843d358")
+  User.findById("63baff16b10e9160a824a699")
     .then((user) => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
+      req.user = user;
       next();
     })
     .catch((err) => {
@@ -46,6 +46,21 @@ app.use("/admin", adminRoute);
 
 app.use(errorController.get404);
 
-mongoConnect(() => {
-  app.listen(3000);
-});
+mongoose
+  .connect(
+    "mongodb+srv://iyiola_dev:iyiola081719@cluster0.nfszgum.mongodb.net/shop?retryWrites=true&w=majority"
+  )
+  .then((results) => {
+    User.findOne().then((user) => {
+      if (!user) {
+        const user = new User({
+          username: "Iyiola",
+          email: "iyiola@test.com",
+          cart: { items: [] },
+        });
+        return user.save();
+      }
+    });
+    console.log("connected");
+    app.listen(3000);
+  });

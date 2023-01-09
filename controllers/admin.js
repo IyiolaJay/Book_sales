@@ -17,14 +17,13 @@ exports.postAddProducts = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  const product = new Product(
-    title,
-    price,
-    description,
-    imageUrl,
-    null,
-    req.user._id
-  );
+  const product = new Product({
+    title: title,
+    price: price,
+    description: description,
+    imageUrl: imageUrl,
+    userId : req.user
+  });
 
   product
     .save()
@@ -39,8 +38,6 @@ exports.postAddProducts = (req, res, next) => {
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
   const prodId = req.params.productId;
-
-  console.log(prodId);
 
   if (!editMode) {
     return res.redirect("/products");
@@ -67,16 +64,15 @@ exports.postEditProduct = (req, res, next) => {
   const newPrice = req.body.price;
   const newDescription = req.body.description;
 
-  const product = new Product(
-    newTitle,
-    newPrice,
-    newDescription,
-    newImageUrl,
-    ProductId,
-    req.user._id
-  );
-  product
-    .save()
+  Product.findById(ProductId)
+    .then((product) => {
+      product.title = newTitle;
+      product.imageUrl = newImageUrl;
+      product.price = newPrice;
+      product.description = newDescription;
+
+      return product.save();
+    })
     .then(() => {
       res.redirect("/admin/products");
     })
@@ -86,7 +82,7 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then((products) => {
       res.render("admin/products", {
         prods: products,
@@ -102,7 +98,7 @@ exports.getProducts = (req, res, next) => {
 exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
   console.log(productId);
-  Product.deleteById(productId)
+  Product.findByIdAndRemove(productId)
     .then(() => {
       res.redirect("/admin/products");
     })
