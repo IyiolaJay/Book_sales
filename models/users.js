@@ -26,7 +26,6 @@ const userSchema = new Schema({
   },
 });
 
-
 userSchema.methods.addToCart = function (product) {
   const cartProductIndex = this.cart.items.findIndex((p) => {
     return p.productId.toString() === product._id.toString();
@@ -61,6 +60,11 @@ userSchema.methods.deleteFromCart = function (id) {
   };
 
   this.cart = updatedCart;
+  return this.save();
+};
+
+userSchema.methods.clearCart = function () {
+  this.cart.items = [];
   return this.save();
 };
 
