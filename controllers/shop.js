@@ -10,6 +10,7 @@ exports.getAllProducts = (req, res, next) => {
         prods: products,
         docTitle: "All Product",
         path: "/products",
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -26,6 +27,7 @@ exports.getProductDetail = (req, res, next) => {
         docTitle: product.title,
         path: "/products",
         product: product,
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -40,6 +42,7 @@ exports.getIndex = (req, res, next) => {
         prods: products,
         docTitle: "Shop Wick",
         path: "/",
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -57,6 +60,8 @@ exports.getCart = (req, res, next) => {
         docTitle: "Cart",
         path: "/cart",
         products: products,
+
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -130,6 +135,7 @@ exports.getOrders = (req, res, next) => {
         docTitle: "Your Order",
         path: "/orders",
         orders: orders,
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((err) => {

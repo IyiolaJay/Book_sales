@@ -21,8 +21,8 @@ app.set("view engine", "ejs");
 app.set("views", "views"); //Tells the express engine where to find the templates
 
 const adminRoute = require("./routes/admin");
-
 const shopRoute = require("./routes/shop");
+const authRoute = require("./routes/auth");
 
 // Imports above, middle-wares are in this section
 
@@ -43,6 +43,7 @@ app.use((req, res, next) => {
 
 app.use(shopRoute);
 app.use("/admin", adminRoute);
+app.use(authRoute);
 
 app.use(errorController.get404);
 
