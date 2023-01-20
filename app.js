@@ -29,6 +29,7 @@ const store = new MongoDbStore({
 });
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+
 app.use(
   session({
     secret: "my secret",
@@ -38,16 +39,19 @@ app.use(
   })
 );
 
-// app.use((req, res, next) => {
-//   User.findById("63baff16b10e9160a824a699")
-//     .then((user) => {
-//       req.user = user;
-//       next();
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// });
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
 app.use(shopRoute);
 app.use("/admin", adminRoute);
@@ -57,19 +61,20 @@ app.use(errorController.get404);
 
 mongoose
   .connect(
-    "mongodb+srv://iyiola_dev:iyiola081719@cluster0.nfszgum.mongodb.net/shop?retryWrites=true&w=majority"
+    MONGODB_URI
+    //   "mongodb+srv://iyiola_dev:iyiola081719@cluster0.nfszgum.mongodb.net/shop?retryWrites=true&w=majority"
   )
   .then((results) => {
-    User.findOne().then((user) => {
-      if (!user) {
-        const user = new User({
-          username: "Iyiola",
-          email: "iyiola@test.com",
-          cart: { items: [] },
-        });
-        return user.save();
-      }
-    });
+    // User.findOne().then((user) => {
+    //   if (!user) {
+    //     const user = new User({
+    //       username: "Iyiola",
+    //       email: "iyiola@test.com",
+    //       cart: { items: [] },
+    //     });
+    //     return user.save();
+    //   }
+    // });
     console.log("connected");
     app.listen(3000);
   });

@@ -12,19 +12,55 @@ exports.getLogin = (req, res, next) => {
 
 exports.postLogin = (req, res, next) => {
   // res.setHeader("Set-Cookie", "loggedIn=true");
-  User.findById("63baff16b10e9160a824a699")
+   const email = req.body.email;
+  User.findOne({email:email})
     .then((user) => {
+      if(!user){
+        return res.redirect('/login');
+      }
       req.session.isLoggedIn = true;
       req.session.user = user;
-
-      res.redirect("/");
+      req.session.save((err) => {
+        return res.redirect("/");
+      });
     })
     .catch((err) => {
       console.log(err);
     });
 };
 
-exports.getLogout = (req, res, next) => {
-  req.session.destroy();
-  res.redirect("/login");
+exports.postLogout = (req, res, next) => {
+  req.session.destroy((err) => {
+    res.redirect("/login");
+  });
+};
+
+exports.getSignUp = (req, res, next) => {
+  res.render("auth/signup", {
+    docTitle: "signup",
+    path: "/signup",
+    isAuthenticated: false,
+  });
+};
+
+exports.postSignUp = (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  User.findOne({ email: email })
+    .then((user) => {
+      if (user) {
+        return res.redirect("/login");
+      }
+      const userNew = new User({ email: email, password: password, cart :{
+        items:[]
+      } });
+      return userNew.save();
+    })
+    .then(() => {
+      res.redirect("/login");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
