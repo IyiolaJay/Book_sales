@@ -1,4 +1,5 @@
 const User = require("../models/users");
+const bcrypt = require("bcryptjs");
 
 exports.getLogin = (req, res, next) => {
   // const isLoggedIn = req.get("Cookie").split("=")[1].trim();
@@ -6,22 +7,24 @@ exports.getLogin = (req, res, next) => {
   res.render("auth/login", {
     docTitle: "Login",
     path: "/login",
-    isAuthenticated: false,
   });
 };
 
 exports.postLogin = (req, res, next) => {
   // res.setHeader("Set-Cookie", "loggedIn=true");
-   const email = req.body.email;
-  User.findOne({email:email})
+  const email = req.body.email;
+  const password = req.body.password;
+  User.findOne({ email: email })
     .then((user) => {
-      if(!user){
-        return res.redirect('/login');
+      if (!user) {
+        return res.redirect("/login");
       }
-      req.session.isLoggedIn = true;
-      req.session.user = user;
-      req.session.save((err) => {
-        return res.redirect("/");
+      return bcrypt.compare(password, user.password).then((doMatch) => {
+        req.session.isLoggedIn = true;
+        req.session.user = user;
+        req.session.save((err) => {
+          res.redirect("/");
+        });
       });
     })
     .catch((err) => {
@@ -39,7 +42,6 @@ exports.getSignUp = (req, res, next) => {
   res.render("auth/signup", {
     docTitle: "signup",
     path: "/signup",
-    isAuthenticated: false,
   });
 };
 
@@ -52,10 +54,16 @@ exports.postSignUp = (req, res, next) => {
       if (user) {
         return res.redirect("/login");
       }
-      const userNew = new User({ email: email, password: password, cart :{
-        items:[]
-      } });
-      return userNew.save();
+      bcrypt.hash(password, 12).then((p) => {
+        const userNew = new User({
+          email: email,
+          password: p,
+          cart: {
+            items: [],
+          },
+        });
+        return userNew.save();
+      });
     })
     .then(() => {
       res.redirect("/login");

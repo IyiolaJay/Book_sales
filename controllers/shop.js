@@ -100,7 +100,6 @@ exports.postDeleteCart = (req, res, next) => {
 };
 
 exports.postOrder = (req, res, next) => {
-  let fetchedCart;
   req.user
     .populate("cart.items.productId")
     // .execPopulate()
@@ -110,7 +109,7 @@ exports.postOrder = (req, res, next) => {
       });
       const order = new Order({
         user: {
-          username: req.user.username,
+          email: req.user.email,
           userId: req.user,
         },
         products: product,
