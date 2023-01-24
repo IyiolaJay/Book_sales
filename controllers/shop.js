@@ -1,57 +1,48 @@
 const Product = require("../models/product");
-const Cart = require("../models/cart");
-const cartItem = require("../models/cart-item");
+const User = require("../models/users");
+const Order = require("../models/order");
 // const product = [];
 
 exports.getAllProducts = (req, res, next) => {
-  Product.findAll()
+  Product.find()
     .then((products) => {
       res.render("shop/product-list", {
         prods: products,
         docTitle: "All Product",
         path: "/products",
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
       console.log(err);
     });
-  // console.log(products);
 };
 
 exports.getProductDetail = (req, res, next) => {
   const id = req.params.productId;
 
-  Product.findByPk(id)
+  Product.findById(id)
     .then((product) => {
-      console.log(product);
       res.render("shop/product-detail", {
         docTitle: product.title,
         path: "/products",
         product: product,
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
       console.log(err);
     });
-
-  // Product.findById(id)
-  //   .then(([products]) => {
-  //     res.render("shop/product-detail", {
-  //       docTitle: products[0].title,
-  //       path: "/products",
-  //       product: products[0],
-  //     });
-  //   })
-  //   .catch((err) => console.log(err));
 };
 
 exports.getIndex = (req, res, next) => {
-  Product.findAll()
+  Product.find()
     .then((products) => {
       res.render("shop/index", {
         prods: products,
         docTitle: "Shop Wick",
         path: "/",
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -61,88 +52,45 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   req.user
-    .getCart()
-    .then((cart) => {
-      return cart.getProducts();
-    })
-    .then((products) => {
+    .populate("cart.items.productId")
+    .then((users) => {
+      const products = users.cart.items;
+
       res.render("shop/cart", {
         docTitle: "Cart",
         path: "/cart",
         products: products,
+
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
       console.log(err);
     });
-  // Cart.getCartProducts((cart) => {
-  //   cartPrice = cart.totalPrice;
-
-  //   Product.fetchAll((products) => {
-  //     const productData = [];
-
-  //     for (let product of products) {
-  //       const cartItem = cart.products.find((p) => p.id === product.id);
-  //       if (cartItem) {
-  //         productData.push({
-  //           cartProduct: product,
-  //           qty: cartItem.qty,
-  //         });
-  //       }
-  //     }
-  //     console.log(cartPrice);
-  //     res.render("shop/cart", {
-  //       docTitle: "Cart",
-  //       path: "/cart",
-  //       products: productData,
-  //       total: cartPrice,
-  //     });
-  //   });
-  // });
 };
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productHiddenId;
   let fetchedCart;
   let newQuantity = 1;
-  req.user
-    .getCart()
-    .then((cart) => {
-      fetchedCart = cart;
-      return cart.getProducts({ where: { id: prodId } });
-    })
-    .then((products) => {
-      let product;
-      if (products.length > 0) {
-        product = products[0];
-      }
 
-      if (product) {
-        oldQuantity = product.cartItem.qty;
-        newQuantity = oldQuantity + 1;
-        return product;
-      }
-      return Product.findByPk(prodId);
+  Product.findById(prodId)
+    .then((product) => {
+      return req.user.addToCart(product);
     })
-    .then((data) => {
-      return fetchedCart.addProduct(data, { through: { qty: newQuantity } });
+    .then((result) => {
+      res.redirect("/products");
     })
-    .catch();
-  res.redirect("/products");
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.postDeleteCart = (req, res, next) => {
   const id = req.params.prodId;
   const price = req.body.prodPrice;
   req.user
-    .getCart()
-    .then((cart) => {
-      return cart.getProducts({ where: { id: id } });
-    })
-    .then((products) => {
-      const product = products[0];
-      return product.cartItem.destroy();
-    })
+    .deleteFromCart(id)
     .then((result) => {
       res.redirect("/cart");
     })
@@ -152,33 +100,24 @@ exports.postDeleteCart = (req, res, next) => {
 };
 
 exports.postOrder = (req, res, next) => {
-  let fetchedCart;
   req.user
-    .getCart()
-    .then((cart) => {
-      fetchedCart = cart;
-      return cart.getProducts();
+    .populate("cart.items.productId")
+    // .execPopulate()
+    .then((users) => {
+      const product = users.cart.items.map((i) => {
+        return { quantity: i.quantity, product: { ...i.productId._doc } };
+      });
+      const order = new Order({
+        user: {
+          email: req.user.email,
+          userId: req.user,
+        },
+        products: product,
+      });
+      return order.save();
     })
-    .then((products) => {
-      return req.user
-        .createOrder()
-        .then((order) => {
-          return order.addProducts(
-            // products,
-            // { through: { qty: products[0].cartItem.qty } }
-            //  Or Use the method above.
-            products.map((product) => {
-              product.orderItem = { qty: product.cartItem.qty };
-              return product;
-            })
-          );
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    })
-    .then((results) => {
-      return fetchedCart.setProducts(null);
+    .then(() => {
+      req.user.clearCart();
     })
     .then((result) => {
       res.redirect("/orders");
@@ -189,13 +128,13 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  req.user
-    .getOrders({ include: ["products"] })
+  Order.find({ "user.userId": req.user._id })
     .then((orders) => {
       res.render("shop/orders", {
         docTitle: "Your Order",
         path: "/orders",
         orders: orders,
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
