@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 const MongoDbStore = require("connect-mongodb-session")(session);
 const cSurf = require("csurf");
 const User = require("./models/users");
+const flash = require('connect-flash');
 
 app.set("view engine", "ejs");
 
@@ -21,6 +22,7 @@ const shopRoute = require("./routes/shop");
 const authRoute = require("./routes/auth");
 
 const cSrfProtection = cSurf();
+
 
 const MONGODB_URI =
   "mongodb+srv://iyiola_dev:iyiola081719@cluster0.nfszgum.mongodb.net/shop?retryWrites=true&w=majority";
@@ -42,6 +44,7 @@ app.use(
 );
 
 app.use(cSrfProtection);
+app.use(flash());
 
 app.use((req,res,next)=>{
   res.locals.csrfToken = req.csrfToken();
