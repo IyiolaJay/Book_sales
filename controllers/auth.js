@@ -1,15 +1,17 @@
+require("dotenv").config();
 const User = require("../models/users");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const sendGridTransport = require("nodemailer-sendgrid-transport");
 
-const transport = nodemailer.createTransport(
-  sendGridTransport({
-    auth: {
-      api_key: "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",
-    },
-  })
-);
+const transport = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.USER,
+    pass: process.env.PASS,
+  },
+  tls: { rejectUnauthorized: false },
+});
 
 exports.getLogin = (req, res, next) => {
   // const isLoggedIn = req.get("Cookie").split("=")[1].trim();
@@ -101,12 +103,20 @@ exports.postSignUp = (req, res, next) => {
     })
     .then(() => {
       res.redirect("/login");
-      return transport.sendMail({
-        from: "shopwick@samplemail.com",
-        to: email,
-        subject: "Welcome Onboard",
-        html: "<h1>Welcome to ShopWick</h1>",
-      });
+      return transport
+        .sendMail({
+          from: "jimoh.iyiola.test11@gmail.com",
+          to: email,
+          subject: "Welcome Onboard",
+          html: "<h1>Welcome to ShopWick</h1>",
+        })
+        .then((result) => {
+          console.log("email sent jor");
+          console.log(result);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     })
     .catch((err) => {
       console.log(err);

@@ -1,4 +1,5 @@
 // const http = require("http");
+require('dotenv').config();
 const express = require("express");
 const path = require("path");
 const rootDir = require("./util/path");
@@ -24,8 +25,7 @@ const authRoute = require("./routes/auth");
 const cSrfProtection = cSurf();
 
 
-const MONGODB_URI =
-  "mongodb+srv://iyiola_dev:iyiola081719@cluster0.nfszgum.mongodb.net/shop?retryWrites=true&w=majority";
+const MONGODB_URI = process.env.URI
 // Imports above, middle-wares are in this section
 const store = new MongoDbStore({
   uri: MONGODB_URI,
