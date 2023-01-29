@@ -1,4 +1,5 @@
 // const http = require("http");
+require('dotenv').config();
 const express = require("express");
 const path = require("path");
 const rootDir = require("./util/path");
@@ -10,6 +11,7 @@ const mongoose = require("mongoose");
 const MongoDbStore = require("connect-mongodb-session")(session);
 const cSurf = require("csurf");
 const User = require("./models/users");
+const flash = require('connect-flash');
 
 app.set("view engine", "ejs");
 
@@ -22,8 +24,8 @@ const authRoute = require("./routes/auth");
 
 const cSrfProtection = cSurf();
 
-const MONGODB_URI =
-  "mongodb+srv://iyiola_dev:iyiola081719@cluster0.nfszgum.mongodb.net/shop?retryWrites=true&w=majority";
+
+const MONGODB_URI = process.env.URI
 // Imports above, middle-wares are in this section
 const store = new MongoDbStore({
   uri: MONGODB_URI,
@@ -42,6 +44,7 @@ app.use(
 );
 
 app.use(cSrfProtection);
+app.use(flash());
 
 app.use((req,res,next)=>{
   res.locals.csrfToken = req.csrfToken();
