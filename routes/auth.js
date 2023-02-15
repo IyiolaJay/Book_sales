@@ -15,7 +15,11 @@ router.get("/signup", authController.getSignUp);
 router.post(
   "/login",
   [
-    body("email").isEmail().withMessage("please enter a valid email"),
+    body("email")
+      .isEmail()
+      .withMessage("please enter a valid email")
+      .normalizeEmail(),
+
     body("password")
       .isLength({ min: 5 })
       .withMessage("Please enter a valid password"),
@@ -41,7 +45,8 @@ router.post(
             return Promise.reject("Email already exist");
           }
         });
-      }),
+      })
+      .normalizeEmail(),
 
     body(
       "password",
@@ -49,13 +54,16 @@ router.post(
     5 characters long and contains alphanumeric`
     )
       .isLength({ min: 5 })
-      .isAlphanumeric("en-US"),
-    body("confirmPassword").custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Passwords do not match");
-      }
-      return true;
-    }),
+      .isAlphanumeric("en-US")
+      .trim(),
+    body("confirmPassword")
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("Passwords do not match");
+        }
+        return true;
+      }),
   ],
   authController.postSignUp
 );
