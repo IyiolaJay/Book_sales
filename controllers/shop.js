@@ -15,6 +15,10 @@ exports.getAllProducts = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -32,6 +36,10 @@ exports.getProductDetail = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -47,6 +55,10 @@ exports.getIndex = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -66,6 +78,10 @@ exports.getCart = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -83,6 +99,9 @@ exports.postCart = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -96,6 +115,9 @@ exports.postDeleteCart = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -124,6 +146,9 @@ exports.postOrder = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -139,6 +164,10 @@ exports.getOrders = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
