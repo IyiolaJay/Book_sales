@@ -1,4 +1,5 @@
 // const Product = require("../models/product");
+const mongoose = require("mongoose");
 const Product = require("../models/product");
 const { ObjectId } = require("mongodb");
 const { validationResult } = require("express-validator");
@@ -36,10 +37,28 @@ exports.addProducts = (req, res, next) => {
 exports.postAddProducts = (req, res, next) => {
   const id = null;
   const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
+  const image = req.file;
   const price = req.body.price;
   const description = req.body.description;
   const errors = validationResult(req);
+
+  if (!image) {
+    return res.status(422).render("admin/edit-product", {
+      docTitle: "Add Product",
+      path: "/admin/add-product",
+      editing: false,
+      hasError: true,
+      errorMessage: "Please Attach an Image File",
+      product: {
+        title: title,
+        price: price,
+        description: description,
+      },
+      validationErrors: errors.array(),
+    });
+  }
+  console.log(image);
+  const imageUrl = `/${image.path}`;
 
   if (!errors.isEmpty()) {
     return res.status(422).render("admin/edit-product", {
@@ -50,7 +69,6 @@ exports.postAddProducts = (req, res, next) => {
       errorMessage: errors.array()[0].msg,
       product: {
         title: title,
-        imageUrl: imageUrl,
         price: price,
         description: description,
       },
@@ -72,7 +90,9 @@ exports.postAddProducts = (req, res, next) => {
       res.redirect("/admin/add-product");
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -101,13 +121,16 @@ exports.getEditProduct = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
 exports.postEditProduct = (req, res, next) => {
   const ProductId = req.body.productId;
   const newTitle = req.body.title;
-  const newImageUrl = req.body.imageUrl;
+  const newImage = req.file;
   const newPrice = req.body.price;
   const newDescription = req.body.description;
   const errors = validationResult(req);
@@ -133,7 +156,9 @@ exports.postEditProduct = (req, res, next) => {
   Product.findById(ProductId)
     .then((product) => {
       product.title = newTitle;
-      product.imageUrl = newImageUrl;
+      if(newImage){
+        product.imageUrl = `/${newImage.path}`;
+      }
       product.price = newPrice;
       product.description = newDescription;
 
@@ -143,6 +168,9 @@ exports.postEditProduct = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -157,6 +185,9 @@ exports.getProducts = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -168,5 +199,8 @@ exports.postDeleteProduct = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };

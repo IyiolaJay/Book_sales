@@ -16,9 +16,6 @@ router.post(
       .isString()
       .withMessage("Title field should contain text and number characters")
       .trim(),
-
-    body("imageUrl", "Enter a valid URL").trim().isURL(),
-
     body("price").isFloat().trim().withMessage("Enter a valid Price"),
 
     body("description", "Please add a proper description")
@@ -37,8 +34,6 @@ router.post(
       .isString()
       .withMessage("Title field should contain text and number characters")
       .trim(),
-
-    body("imageUrl", "Enter a valid URL").trim().isURL(),
 
     body("price").isFloat().trim().withMessage("Enter a valid Price"),
 
