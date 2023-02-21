@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const Product = require("../models/product");
 const { ObjectId } = require("mongodb");
 const { validationResult } = require("express-validator");
+const fileHelper = require("../util/file");
 
 const flashMessage = (req) => {
   const errorMessage = req.flash("error");
@@ -156,7 +157,8 @@ exports.postEditProduct = (req, res, next) => {
   Product.findById(ProductId)
     .then((product) => {
       product.title = newTitle;
-      if(newImage){
+      if (newImage) {
+        fileHelper.deleteFile(product.imageUrl);
         product.imageUrl = `/${newImage.path}`;
       }
       product.price = newPrice;
@@ -193,7 +195,16 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  Product.deleteOne({ _id: productId, userId: req.user._id })
+  Product.findById(productId)
+    .then((product) => {
+      if (!product) {
+        return next(new Error("No Product Found"));
+      }
+      return fileHelper.deleteFile(product.imageUrl).then((results) => {
+        console.log(results);
+        return Product.deleteOne({ _id: productId, userId: req.user._id });
+      });
+    })
     .then(() => {
       res.redirect("/admin/products");
     })
