@@ -1,0 +1,3 @@
+window.STRIPE_PUBLIC_KEY = String(
+  "pk_test_51MfnCFHzDRYKUBs6ZXzLTh8W8xccU5XTTtkHvx9t2PmuMRI3K6ZEiCIFOZP7ceCLUCcv4okrjueH5RKxkUkHECWV00fj9apAb5"
+);
