@@ -1,4 +1,4 @@
 node_modules/*
 .vscode
 .env
-js/config.js
+public/js/config.js
